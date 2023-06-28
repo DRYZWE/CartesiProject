@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Aluguel de Bicicletas</title>
+  <script>
+    function alugarBicicleta() {
+      var bikeId = document.getElementById('bikeId').value;
+      var userId = document.getElementById('userId').value;
+      var rentalTime = document.getElementById('rentalTime').value;
+
+      var data = {
+        bike_id: bikeId,
+        user_id: userId,
+        rental_time: rentalTime
+      };
+
+      fetch('http://localhost:5000/alugar', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(function(response) {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('Erro ao alugar a bicicleta');
+        }
+      })
+      .then(function(data) {
+        console.log('Bicicleta alugada com sucesso');
+        alert('Bicicleta alugada com sucesso')
+      })
+      .catch(function(error) {
+        console.error(error);
+        alert('Erro : Bicicleta já esta alugada')
+      });
+    }
+    function devolverBicicleta() {
+      var bikeId = document.getElementById('bikeId-devolver').value;
+
+      var data = {
+        bike_id: bikeId
+      };
+
+      fetch('http://localhost:5000/devolver', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(function(response) {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('Erro ao devolver a bicicleta');
+        }
+      })
+      .then(function(data) {
+        console.log(data);
+        var mensagemDiv = document.getElementById('mensagem');
+      
+        // Criar o elemento de parágrafo
+        var paragrafo1 = document.createElement('p');        
+        var paragrafo2 = document.createElement('p');
+        var paragrafo3= document.createElement('p');
+        
+        // Definir o texto do parágrafo
+        paragrafo1.textContent = `Hash: ${data.hash}` ;
+        paragrafo2.textContent = `Mensagem: ${data.message}`;
+        paragrafo3.textContent = `Tempo Restante: ${data.remaining_time}`;
+        // Adicionar o parágrafo como filho da div
+        mensagemDiv.appendChild(paragrafo1);
+        mensagemDiv.appendChild(paragrafo2);
+        mensagemDiv.appendChild(paragrafo3);
+      })
+
+      .catch(function(error) {
+        console.error(error);
+        alert('Erro : Bicicleta já foi devolvida')
+        // Faça o que deseja com o erro
+      });
+    }  
+  </script>
+</head>
+<body>
+  <h1>Aluguel de Bicicletas</h1>
+  
+  <label for="bikeId">ID da Bicicleta:</label>
+  <input type="text" id="bikeId">
+  <br>
+  
+  <label for="userId">ID do Usuário:</label>
+  <input type="text" id="userId">
+  <br>
+  
+  <label for="rentalTime">Tempo de Aluguel (minutos):</label>
+  <input type="text" id="rentalTime">
+  <br>
+  
+  <button onclick="alugarBicicleta()">Alugar</button>
+  
+  <h1>Devolução de Bicicletas</h1>
+  
+  <label for="bikeId-devolver">ID da Bicicleta:</label>
+  <input type="text" id="bikeId-devolver">
+  <br>
+  
+  <button onclick="devolverBicicleta()">Devolver</button>
+
+  <div id="mensagem"></div>
+
+  
+</body>
+</html>
